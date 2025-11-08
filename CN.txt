@@ -1,0 +1,65 @@
+# ---------------------------------------------------------
+# Mini Project: Virtual LAN Design for Eco-Friendly Campus Networking
+# Subject: Computer Networks
+# Language: Python
+# Author: Sharmi Saravanan
+# ---------------------------------------------------------
+
+class VLAN:
+    def __init__(self, vlan_id, name):
+        self.vlan_id = vlan_id
+        self.name = name
+        self.devices = []
+
+    def add_device(self, device):
+        self.devices.append(device)
+
+    def show_devices(self):
+        print(f"\nDevices in VLAN {self.vlan_id} ({self.name}):")
+        for d in self.devices:
+            print(f" - {d.name}")
+
+
+class Device:
+    def __init__(self, name, vlan):
+        self.name = name
+        self.vlan = vlan
+        vlan.add_device(self)
+
+    def send_message(self, message, receiver):
+        print(f"\n{self.name} (VLAN {self.vlan.vlan_id}) --> {receiver.name} (VLAN {receiver.vlan.vlan_id})")
+        if self.vlan == receiver.vlan:
+            print(f"✅ Message delivered: \"{message}\"")
+        else:
+            print("❌ Message blocked: VLANs are different.")
+
+
+# ------------------------------------------
+# Create VLANs for each department
+# ------------------------------------------
+vlan_cs = VLAN(10, "Computer Science")
+vlan_ece = VLAN(20, "Electronics")
+vlan_admin = VLAN(30, "Administration")
+
+# ------------------------------------------
+# Create Devices in each VLAN
+# ------------------------------------------
+cs1 = Device("CS-PC1", vlan_cs)
+cs2 = Device("CS-PC2", vlan_cs)
+ece1 = Device("ECE-PC1", vlan_ece)
+admin1 = Device("ADMIN-PC1", vlan_admin)
+
+# ------------------------------------------
+# Display Devices in each VLAN
+# ------------------------------------------
+vlan_cs.show_devices()
+vlan_ece.show_devices()
+vlan_admin.show_devices()
+
+# ------------------------------------------
+# Communication Simulation
+# ------------------------------------------
+cs1.send_message("Hello CS team!", cs2)       # Same VLAN
+cs1.send_message("Hi ECE team!", ece1)        # Different VLAN
+ece1.send_message("Report to Admin Dept", admin1)  # Different VLAN
+admin1.send_message("Meeting Notice", admin1) # Same VLAN
